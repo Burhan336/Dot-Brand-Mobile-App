@@ -185,12 +185,12 @@ const MultiAdminManageCatalog = () => {
         </View>
       ) : !catalogData.length ? (
         <View style={styles.noDataContainer}>
-          <Text style={styles.noDataText}>You are not signed in!</Text>
+          <Text style={styles.noDataText}>There is no data to show here!</Text>
           <TouchableOpacity
             style={styles.signInButton}
             onPress={() => navigation.navigate("LoginScreen")}
           >
-            <Text style={styles.buttonText}>Sign In</Text>
+            <Text style={styles.buttonText}>Sign Out</Text>
           </TouchableOpacity>
         </View>
       ) : (

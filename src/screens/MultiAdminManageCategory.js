@@ -133,7 +133,7 @@ const MultiAdminManageCategory = () => {
                   <Image
                     source={{ uri: item.image }} // Use item.image directly
                     style={styles.productImage}
-                    resizeMode="cover" // Adjust the resizeMode if needed
+                    resizeMode="contain" // Adjust the resizeMode if needed
                   />
                 ) : (
                   <Text>No Image</Text>

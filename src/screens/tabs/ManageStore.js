@@ -8,7 +8,7 @@ import {
   TextInput,
   ActivityIndicator,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import Header from "../../common/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -183,6 +183,12 @@ const ManageStore = () => {
         isDarkMode={isDarkMode}
         isLoggedIn={isLoggedIn} // Pass handleLogout function
       />
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate("AddStore")}
+      >
+        <AntDesign name="plus" size={24} color="#fff" />
+      </TouchableOpacity>
       {loading ? (
         <View style={styles.loaderContainer}>
           {/* You can use any loader component here */}
@@ -261,6 +267,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  addButton: {
+    position: "absolute",
+    bottom: 50,
+    right: 30,
+    backgroundColor: "#007bff",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+    zIndex: 1,
   },
   searchFilterContainer: {
     flexDirection: "row",

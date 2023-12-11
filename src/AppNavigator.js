@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 // import Main from "./screens/Main";
 import ManageStore from "./screens/tabs/ManageStore";
 import LoginScreen from "./screens/LoginScreen";
-import HomeScreen from "./screens/HomeScreen";
+// import HomeScreen from "./screens/HomeScreen";
 import MultiAdminScreen from "./screens/MultiAdminScreen";
 import ManageOutlets from "./screens/ManageOutlets";
 import ManageUsers from "./screens/ManageUsers";
@@ -20,6 +20,8 @@ import MultiAdminManageCatalog from "./screens/MultiAdminManageCatalog";
 import MultiAdminManageCategory from "./screens/MultiAdminManageCategory";
 import MultiAdminManageBanners from "./screens/MultiAdminManageBanners";
 import MultiAdminManageBrands from "./screens/MultiAdminManageBrands";
+import AddStore from "./screens/AddStore";
+import Home from "./screens/tabs/Home";
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
@@ -36,14 +38,24 @@ const AppNavigator = () => {
           component={Main}
           options={{ headerShown: false }}
         /> */}
-        <Stack.Screen
+        {/* <Stack.Screen
           name="HomeScreen"
           component={HomeScreen}
+          options={{ headerShown: false }}
+        /> */}
+        <Stack.Screen
+          name="Home"
+          component={Home}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="ManageStore"
           component={ManageStore}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AddStore"
+          component={AddStore}
           options={{ headerShown: false }}
         />
         <Stack.Screen

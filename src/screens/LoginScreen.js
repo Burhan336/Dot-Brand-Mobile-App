@@ -55,7 +55,7 @@ const LoginScreen = () => {
               // Navigate to different screens based on selected role
               switch (selectedRole) {
                 case "super-admin":
-                  navigation.navigate("HomeScreen");
+                  navigation.navigate("Home");
                   break;
                 case "multi-admin":
                   navigation.navigate("MultiAdminScreen");
@@ -182,15 +182,19 @@ const LoginScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
+
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginText}>Login</Text>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={handleLogin}
+            disabled={isLoading} // Disable button during loading
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.loginText}>Login</Text>
+            )}
           </TouchableOpacity>
-          {isLoading && (
-            <View style={styles.activityIndicatorContainer}>
-              <ActivityIndicator size="large" color="#16288f" />
-            </View>
-          )}
         </View>
       </View>
     </View>
@@ -288,9 +292,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#16288f",
     borderRadius: 10,
     paddingVertical: 15,
-    paddingHorizontal: 40,
+    paddingHorizontal: 60,
     alignItems: "center",
-    marginTop: 40,
+    marginTop: 60,
   },
   loginText: {
     color: "#fff",
