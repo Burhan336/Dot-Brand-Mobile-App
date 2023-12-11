@@ -5,7 +5,7 @@ import { LineChart } from "react-native-chart-kit";
 import { useNavigation } from "@react-navigation/native";
 import AuthStorage from "../authentication/AuthStorage";
 
-const MultiAdminScreen = () => {
+const SoleAdminScreen = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigation = useNavigation();
@@ -36,12 +36,6 @@ const MultiAdminScreen = () => {
     // Additional logic for applying dark mode across the app
   };
 
-  const [stats, setStats] = useState({
-    totalOutlets: 30,
-    totalCatalogItems: 150,
-    totalCategories: 10,
-  });
-
   const chartData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
@@ -56,7 +50,7 @@ const MultiAdminScreen = () => {
       <Header
         leftIcon={require("../images/logout.png")}
         rightIcon={require("../images/night-mode.png")}
-        title={"Multi Admin Panel"}
+        title={"Sole Admin Panel"}
         onClickLeftIcon={() => {
           handleLogout();
         }}
@@ -66,7 +60,7 @@ const MultiAdminScreen = () => {
       />
       {/* Updated section with title and labeled card section */}
       <View style={styles.welcomeContainer}>
-        <Text style={styles.welcomeText}>Welcome Multi Chain Admin</Text>
+        <Text style={styles.welcomeText}>Welcome Sole Admin</Text>
       </View>
 
       <View style={styles.cardContainer}>
@@ -74,19 +68,19 @@ const MultiAdminScreen = () => {
         <View style={styles.cardRow}>
           <TouchableOpacity
             style={[styles.card, styles.manageCard]}
-            onPress={() => navigation.navigate("ManageOutlets")}
+            onPress={() => navigation.navigate("SoleAdminManageProducts")}
           >
-            <Text style={styles.cardTitle}>Manage Outlets</Text>
+            <Text style={styles.cardTitle}>Manage Products</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.card, styles.manageCard]}
-            onPress={() => navigation.navigate("MultiAdminManageCatalog")}
+            onPress={() => navigation.navigate("SoleAdminManageCatalog")}
           >
             <Text style={styles.cardTitle}>Manage Catalog</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.card, styles.manageCard]}
-            onPress={() => navigation.navigate("MultiAdminManageCategory")}
+            onPress={() => navigation.navigate("SoleAdminManageCategory")}
           >
             <Text style={styles.cardTitle}>Manage Category</Text>
           </TouchableOpacity>
@@ -95,30 +89,21 @@ const MultiAdminScreen = () => {
         <View style={styles.cardRow}>
           <TouchableOpacity
             style={[styles.card, styles.manageCard]}
-            onPress={() => navigation.navigate("MultiAdminManageBanners")}
+            onPress={() => navigation.navigate("SoleAdminManageBanners")}
           >
             <Text style={styles.cardTitle}>Manage Banners</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.card, styles.manageCard]}
-            onPress={() => navigation.navigate("MultiAdminManageBrands")}
+            onPress={() => navigation.navigate("SoleAdminManageBrands")}
           >
             <Text style={styles.cardTitle}>Manage Brands</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.card, styles.manageCard]}
-            onPress={() => navigation.navigate("MultiAdminManageUsers")}
+            onPress={() => navigation.navigate("SoleAdminManageUsers")}
           >
             <Text style={styles.cardTitle}>Manage Users</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.cardRow}>
-          <TouchableOpacity
-            style={[styles.card, styles.manageCard]}
-            onPress={() => navigation.navigate("MultiAdminManageOrders")}
-          >
-            <Text style={styles.cardTitle}>Manage Orders</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -213,15 +198,37 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
+  manageCardSeparate: {
+    backgroundColor: "blue",
+    borderRadius: 12,
+    padding: 20,
+    paddingVertical: 20,
+    marginHorizontal: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
   cardTitle: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
     textAlign: "center",
   },
+  cardTitleSeparate: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+  },
 
   sectionContainer: {
-    marginBottom: 20,
+    marginBottom: 80,
     paddingHorizontal: 15,
     paddingTop: 10,
   },
@@ -241,4 +248,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MultiAdminScreen;
+export default SoleAdminScreen;

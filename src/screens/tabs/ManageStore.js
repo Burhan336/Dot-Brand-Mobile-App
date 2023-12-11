@@ -128,9 +128,9 @@ const ManageStore = () => {
               <Text style={styles.label}>Store Name:</Text>
               <Text style={styles.value}>{item.storeName}</Text>
               <Text style={styles.label}>Admin Name:</Text>
-              <Text style={styles.value}>{item.multiAdminEmail}</Text>
-              <Text style={styles.label}>Admin Email:</Text>
               <Text style={styles.value}>{item.multiAdminName}</Text>
+              <Text style={styles.label}>Admin Email:</Text>
+              <Text style={styles.value}>{item.multiAdminEmail}</Text>
               <Text style={styles.label}>Created At:</Text>
               <Text style={styles.value}>{item.createdAt}</Text>
               <Text style={styles.label}>Status:</Text>

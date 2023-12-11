@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  Image,
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -16,34 +17,34 @@ import { useNavigation } from "@react-navigation/native";
 import Header from "../common/Header";
 import AuthStorage from "../authentication/AuthStorage";
 
-const ManageOutlets = () => {
+const SoleAdminManageBanners = () => {
   const navigation = useNavigation();
 
-  const [outletData, setOutletData] = useState([]);
+  const [bannerData, setBannerData] = useState([]);
 
   const [searchText, setSearchText] = useState("");
-  const [filteredData, setFilteredData] = useState(outletData);
+  const [filteredData, setFilteredData] = useState(bannerData);
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const fetchOutletData = async () => {
+    const fetchBannerData = async () => {
       try {
         const accessToken = await AsyncStorage.getItem("accessToken");
         if (accessToken) {
           const apiUrl =
-            "https://dotbrand-api.onrender.com/api/v1/multiadmin/outlet";
+            "https://dotbrand-api.onrender.com/api/v1/multiadmin/banner/";
           const config = {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           };
           const response = await axios.get(apiUrl, config);
-          console.log("OutletData:", response.data.payload.outlets); // Add this line to log the fetched data
-          setOutletData(response.data.payload.outlets);
-          setFilteredData(response.data.payload.outlets);
+          console.log("BannerData:", response.data.payload.banners); // Add this line to log the fetched data
+          setBannerData(response.data.payload.banners);
+          setFilteredData(response.data.payload.banners);
           setLoading(false);
         } else {
           console.log("Access token not found");
@@ -60,7 +61,7 @@ const ManageOutlets = () => {
       setIsLoggedIn(loggedIn);
     };
 
-    fetchOutletData();
+    fetchBannerData();
     checkLoginStatus();
   }, []);
 
@@ -82,8 +83,8 @@ const ManageOutlets = () => {
 
   const handleSearch = (text) => {
     setSearchText(text);
-    const filtered = outletData.filter((item) =>
-      item.outletName.toLowerCase().includes(text.toLowerCase())
+    const filtered = bannerData.filter((item) =>
+      item.name.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredData(filtered);
   };
@@ -91,94 +92,76 @@ const ManageOutlets = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [filterOption, setFilterOption] = useState(null);
 
-  const applyFilter = (option) => {
-    setShowFilter(false);
-    setFilterOption(option);
+  // const applyFilter = (option) => {
+  //   setShowFilter(false);
+  //   setFilterOption(option);
 
-    let filtered = [...outletData];
-    if (option === "created_at") {
-      // Sort by Created At
-      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    } else if (option === "status") {
-      // Filter by Status
-      filtered = filtered.filter((item) => item.isActive); // Directly compare boolean value
-    }
-    setFilteredData(filtered);
-  };
+  //   let filtered = [...categoryData];
+  //   if (option === "true") {
+  //     // Filter by active status
+  //     filtered = filtered.filter((item) => item.status === "true");
+  //   } else if (option === "false") {
+  //     // Filter by inactive status
+  //     filtered = filtered.filter((item) => item.status === "false");
+  //   }
+  //   setFilteredData(filtered);
+  // };
 
-  const renderFilterOptions = () => (
-    <View style={styles.filterOptions}>
-      <TouchableOpacity onPress={() => applyFilter("created_at")}>
-        <Text style={styles.filterOption}>Sort by Created At</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => applyFilter("status")}>
-        <Text style={styles.filterOption}>Active Outlets</Text>
-      </TouchableOpacity>
-      {/* Add more filter options as needed */}
-    </View>
-  );
+  // const renderFilterOptions = () => (
+  //   <View style={styles.filterOptions}>
+  //     <TouchableOpacity onPress={() => applyFilter("true")}>
+  //       <Text style={styles.filterOption}>Active</Text>
+  //     </TouchableOpacity>
+  //     <TouchableOpacity onPress={() => applyFilter("false")}>
+  //       <Text style={styles.filterOption}>Inactive</Text>
+  //     </TouchableOpacity>
+  //   </View>
+  // );
 
   const renderCard = ({ item }) => {
     console.log("Item:", item);
+
+    //As the api response give all other parameters in  "catalogItem" and quantity as "quantity"
 
     return (
       <TouchableOpacity onPress={() => console.log("Card pressed")}>
         <View style={styles.cardContainer}>
           <View style={styles.card}>
             <View style={styles.cardInfo}>
-              <Text style={styles.label}>Outlet Name:</Text>
-              <Text style={styles.value}>{item.outletName}</Text>
-              <Text style={styles.label}>Admin Name:</Text>
-              <Text style={styles.value}>{item.adminName}</Text>
-              <Text style={styles.label}>Admin Email:</Text>
-              <Text style={styles.value}>{item.adminEmail}</Text>
-              <Text style={styles.label}>Admin Number:</Text>
-              <Text style={styles.value}>{item.adminNumber}</Text>
-              <Text style={styles.label}>Longitude:</Text>
-              <Text style={styles.value}>{item.longitude}</Text>
-              <Text style={styles.label}>Latitude:</Text>
-              <Text style={styles.value}>{item.latitude}</Text>
-              <Text style={styles.label}>Tax Value:</Text>
-              <Text style={styles.value}>{item.taxValue}</Text>
-              <Text style={styles.label}>Address:</Text>
-              <Text style={styles.value}>{item.address}</Text>
-              <Text style={styles.label}>Created At:</Text>
-              <Text style={styles.value}>{item.createdAt}</Text>
-              <Text style={styles.label}>Status:</Text>
+              <View style={styles.imageContainer}>
+                {item && item.image && item.image.length > 0 ? (
+                  <Image
+                    source={{ uri: item.image }} // Use item.image directly
+                    style={styles.productImage}
+                    resizeMode="contain" // Adjust the resizeMode if needed
+                  />
+                ) : (
+                  <Text>No Image</Text>
+                )}
+              </View>
+              <Text style={styles.label}>Category Name:</Text>
+              <Text style={styles.value}>{item.name}</Text>
+              <Text style={styles.label}>Status</Text>
               <Text
                 style={[
                   styles.value,
-                  { color: item.isActive ? "#28a745" : "#dc3545" }, // Green for true, Red for false
+                  { color: item.status ? "#28a745" : "#dc3545" }, // Green for true, Red for false
                 ]}
               >
-                {item.isActive ? "Active" : "Inactive"}
+                {item.status ? "Active" : "In-active"}
               </Text>
-            </View>
-
-            <View style={styles.cardActions}>
-              <View style={styles.editDelete}>
-                <TouchableOpacity onPress={() => console.log("Edit")}>
-                  <Ionicons
-                    name="create-outline"
-                    size={24}
-                    color="#007bff"
-                    style={styles.actionIcon}
-                  />
-                </TouchableOpacity>
-              </View>
             </View>
           </View>
         </View>
       </TouchableOpacity>
     );
   };
-
   return (
     <View style={[styles.container, isDarkMode && styles.darkMode]}>
       <Header
         leftIcon={require("../images/logout.png")}
         rightIcon={require("../images/night-mode.png")}
-        title={"Manage Outlets"}
+        title={"Manage Category"}
         onClickLeftIcon={() => {
           handleLogout();
         }}
@@ -191,7 +174,7 @@ const ManageOutlets = () => {
           {/* You can use any loader component here */}
           <ActivityIndicator size="large" color="#007bff" />
         </View>
-      ) : !outletData.length ? (
+      ) : !bannerData.length ? (
         <View style={styles.noDataContainer}>
           <Text style={styles.noDataText}>You are not signed in!</Text>
           <TouchableOpacity
@@ -219,7 +202,7 @@ const ManageOutlets = () => {
                 value={searchText}
               />
             </View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.filterButton}
               onPress={() => setShowFilter(!showFilter)}
             >
@@ -229,16 +212,16 @@ const ManageOutlets = () => {
                 color="#fff"
                 style={styles.filterIcon}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
-          {filteredData.length === 0 && (
+          {/* {filteredData.length === 0 && (
             <View style={styles.noDataContainer}>
               <Text style={styles.noDataText}>
                 Not signed in. Please sign in!
               </Text>
             </View>
-          )}
-          {showFilter && renderFilterOptions()}
+          )} */}
+          {/* {showFilter && renderFilterOptions()} */}
           <FlatList
             data={filteredData}
             renderItem={renderCard}
@@ -252,6 +235,7 @@ const ManageOutlets = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -342,6 +326,15 @@ const styles = StyleSheet.create({
   cardInfo: {
     marginBottom: 6,
   },
+  imageContainer: {
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  productImage: {
+    width: 150, // Adjust the width as needed
+    height: 150, // Adjust the height as needed
+    borderRadius: 8,
+  },
   label: {
     fontSize: 14,
     fontWeight: "bold",
@@ -353,11 +346,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
     color: "#444",
   },
-  cardActions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-  },
+
   toggleButton: {
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -403,4 +392,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ManageOutlets;
+export default SoleAdminManageBanners;

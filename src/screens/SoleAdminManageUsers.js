@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const ManageCategories = () => {
+const SoleAdminManageUsers = () => {
   return (
     <View>
-      <Text>ManageCategories</Text>
+      <Text>SoleAdminManageUsers</Text>
     </View>
   );
 };
 
-export default ManageCategories;
+export default SoleAdminManageUsers;

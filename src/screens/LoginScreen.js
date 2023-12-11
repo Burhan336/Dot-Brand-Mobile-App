@@ -60,9 +60,9 @@ const LoginScreen = () => {
                 case "multi-admin":
                   navigation.navigate("MultiAdminScreen");
                   break;
-                // case "sole-admin":
-                //   navigation.navigate("SoleAdminScreen");
-                //   break;
+                case "sole-admin":
+                  navigation.navigate("SoleAdminScreen");
+                  break;
                 default:
                   break;
               }

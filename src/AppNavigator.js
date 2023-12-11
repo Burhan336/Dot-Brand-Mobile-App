@@ -8,12 +8,18 @@ import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
 import MultiAdminScreen from "./screens/MultiAdminScreen";
 import ManageOutlets from "./screens/ManageOutlets";
-import ManageCatalog from "./screens/ManageCatalog";
-import ManageCategories from "./screens/ManageCategories";
-import ManageBanners from "./screens/ManageBanners";
-import ManageBrands from "./screens/ManageBrands";
 import ManageUsers from "./screens/ManageUsers";
 import ManageOrders from "./screens/ManageOrders";
+import SoleAdminScreen from "./screens/SoleAdminScreen";
+import SoleAdminManageProducts from "./screens/SoleAdminManageProducts";
+import SoleAdminManageCatalog from "./screens/SoleAdminManageCatalog";
+import SoleAdminManageCategory from "./screens/SoleAdminManageCategory";
+import SoleAdminManageBanners from "./screens/SoleAdminManageBanners";
+import SoleAdminManageBrands from "./screens/SoleAdminManageBrands";
+import MultiAdminManageCatalog from "./screens/MultiAdminManageCatalog";
+import MultiAdminManageCategory from "./screens/MultiAdminManageCategory";
+import MultiAdminManageBanners from "./screens/MultiAdminManageBanners";
+import MultiAdminManageBrands from "./screens/MultiAdminManageBrands";
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
@@ -51,23 +57,23 @@ const AppNavigator = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="ManageCatalog"
-          component={ManageCatalog}
+          name="MultiAdminManageCatalog"
+          component={MultiAdminManageCatalog}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="ManageCategories"
-          component={ManageCategories}
+          name="MultiAdminManageCategory"
+          component={MultiAdminManageCategory}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="ManageBanners"
-          component={ManageBanners}
+          name="MultiAdminManageBanners"
+          component={MultiAdminManageBanners}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="ManageBrands"
-          component={ManageBrands}
+          name="MultiAdminManageBrands"
+          component={MultiAdminManageBrands}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -78,6 +84,36 @@ const AppNavigator = () => {
         <Stack.Screen
           name="ManageOrders"
           component={ManageOrders}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SoleAdminScreen"
+          component={SoleAdminScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SoleAdminManageProducts"
+          component={SoleAdminManageProducts}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SoleAdminManageCatalog"
+          component={SoleAdminManageCatalog}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SoleAdminManageCategory"
+          component={SoleAdminManageCategory}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SoleAdminManageBanners"
+          component={SoleAdminManageBanners}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SoleAdminManageBrands"
+          component={SoleAdminManageBrands}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
