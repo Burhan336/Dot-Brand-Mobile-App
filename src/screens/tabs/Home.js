@@ -1,10 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, FlatList } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import Header from "../../common/Header";
 import { LineChart } from "react-native-chart-kit";
+import { useNavigation } from "@react-navigation/native";
+import AuthStorage from "../../authentication/AuthStorage";
 
-const Home = ({ navigation }) => {
+const Home = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    // Check login status when the component mounts
+    const checkLoginStatus = async () => {
+      const loggedIn = await AuthStorage.isLoggedIn();
+      setIsLoggedIn(loggedIn);
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await AuthStorage.clearLoggedIn(navigation); // Clear logged-in status
+      setIsLoggedIn(false); // Update state to reflect logout
+      // Additional logic for navigating or resetting state if needed
+    } catch (error) {
+      console.error("Error logging out:", error);
+      // Handle logout error if needed
+    }
+  };
 
   const toggleDarkMode = () => {
     setIsDarkMode((prevMode) => !prevMode);
@@ -29,14 +54,15 @@ const Home = ({ navigation }) => {
   return (
     <View style={[styles.container, isDarkMode && styles.darkMode]}>
       <Header
-        leftIcon={require("../../images/menu.png")}
+        leftIcon={require("../../images/logout.png")}
         rightIcon={require("../../images/night-mode.png")}
         title={"Super Admin Panel"}
         onClickLeftIcon={() => {
-          navigation.openDrawer();
+          handleLogout();
         }}
-        onClickRightIcon={toggleDarkMode} // Pass the function to handle dark mode toggle
-        isDarkMode={isDarkMode} // Pass the dark mode state to the Header component
+        onClickRightIcon={toggleDarkMode}
+        isDarkMode={isDarkMode}
+        isLoggedIn={isLoggedIn} // Pass handleLogout function
       />
 
       <View style={styles.cardContainer}>
@@ -62,6 +88,12 @@ const Home = ({ navigation }) => {
             <Text style={styles.statValueInactive}>{stats.inactiveStores}</Text>
           </View>
         </View>
+        <TouchableOpacity
+          style={styles.manageButton}
+          onPress={() => navigation.navigate("ManageStore")}
+        >
+          <Text style={styles.manageButtonText}>Manage Stores</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.sectionContainer}>
@@ -135,6 +167,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: "blue",
   },
+
   stats: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -175,6 +208,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "red",
+  },
+  manageButton: {
+    backgroundColor: "blue",
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  manageButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   chartContainer: {
     alignItems: "center",

@@ -11,14 +11,18 @@ const Header = ({
   rightIcon,
   onClickLeftIcon,
   onClickRightIcon,
-  isDarkMode, // Added prop to track the dark mode status
+  isDarkMode,
+  isLoggedIn,
 }) => {
   return (
     <SafeAreaView style={[styles.container, isDarkMode && styles.darkMode]}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.btn} onPress={onClickLeftIcon}>
-          <Image source={leftIcon} style={styles.icon} resizeMode="contain" />
-        </TouchableOpacity>
+        {isLoggedIn && (
+          <TouchableOpacity style={styles.btn} onPress={onClickLeftIcon}>
+            <Image source={leftIcon} style={styles.icon} resizeMode="contain" />
+          </TouchableOpacity>
+        )}
+
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
           {title}
         </Text>
@@ -61,6 +65,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     maxWidth: width * 0.6,
     textAlign: "center",
+  },
+  logoutText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

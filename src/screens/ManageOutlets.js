@@ -8,48 +8,49 @@ import {
   TextInput,
   ActivityIndicator,
 } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
-import Header from "../../common/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/native"; // Import useNavigation
-import AuthStorage from "../../authentication/AuthStorage";
+import { useNavigation } from "@react-navigation/native";
+import Header from "../common/Header";
+import AuthStorage from "../authentication/AuthStorage";
 
-const ManageStore = () => {
+const ManageOutlets = () => {
   const navigation = useNavigation();
-  const [storeData, setStoreData] = useState([]);
+
+  const [outletData, setStoreData] = useState([]);
 
   const [searchText, setSearchText] = useState("");
-  const [filteredData, setFilteredData] = useState(storeData);
+  const [filteredData, setFilteredData] = useState(outletData);
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // Add loading state
 
   useEffect(() => {
-    const fetchStoreData = async () => {
+    const fetchOutletData = async () => {
       try {
         const accessToken = await AsyncStorage.getItem("accessToken");
         if (accessToken) {
           const apiUrl =
-            "https://dotbrand-api.onrender.com/api/v1/superadmin/store";
+            "https://dotbrand-api.onrender.com/api/v1/multiadmin/outlet";
           const config = {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           };
           const response = await axios.get(apiUrl, config);
-          console.log("Store Data:", response.data.payload.stores); // Add this line to log the fetched data
-          setStoreData(response.data.payload.stores);
-          setFilteredData(response.data.payload.stores);
+          console.log("OutletData:", response.data.payload.outlets); // Add this line to log the fetched data
+          setStoreData(response.data.payload.outlets);
+          setFilteredData(response.data.payload.outlets);
           setLoading(false);
         } else {
           console.log("Access token not found");
           setLoading(false);
         }
       } catch (error) {
-        console.error("Error fetching store data:", error);
+        console.error("Error fetching outlet data:", error);
         setLoading(false);
       }
     };
@@ -59,7 +60,7 @@ const ManageStore = () => {
       setIsLoggedIn(loggedIn);
     };
 
-    fetchStoreData();
+    fetchOutletData();
     checkLoginStatus();
   }, []);
 
@@ -81,8 +82,8 @@ const ManageStore = () => {
 
   const handleSearch = (text) => {
     setSearchText(text);
-    const filtered = storeData.filter((item) =>
-      item.storeName.toLowerCase().includes(text.toLowerCase())
+    const filtered = outletData.filter((item) =>
+      item.outletName.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredData(filtered);
   };
@@ -94,7 +95,7 @@ const ManageStore = () => {
     setShowFilter(false);
     setFilterOption(option);
 
-    let filtered = [...storeData];
+    let filtered = [...outletData];
     if (option === "created_at") {
       // Sort by Created At
       filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -111,7 +112,7 @@ const ManageStore = () => {
         <Text style={styles.filterOption}>Sort by Created At</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => applyFilter("status")}>
-        <Text style={styles.filterOption}>Active Stores</Text>
+        <Text style={styles.filterOption}>Active Outlets</Text>
       </TouchableOpacity>
       {/* Add more filter options as needed */}
     </View>
@@ -125,12 +126,22 @@ const ManageStore = () => {
         <View style={styles.cardContainer}>
           <View style={styles.card}>
             <View style={styles.cardInfo}>
-              <Text style={styles.label}>Store Name:</Text>
-              <Text style={styles.value}>{item.storeName}</Text>
+              <Text style={styles.label}>Outlet Name:</Text>
+              <Text style={styles.value}>{item.outletName}</Text>
               <Text style={styles.label}>Admin Name:</Text>
-              <Text style={styles.value}>{item.multiAdminEmail}</Text>
+              <Text style={styles.value}>{item.adminName}</Text>
               <Text style={styles.label}>Admin Email:</Text>
-              <Text style={styles.value}>{item.multiAdminName}</Text>
+              <Text style={styles.value}>{item.adminEmail}</Text>
+              <Text style={styles.label}>Admin Number:</Text>
+              <Text style={styles.value}>{item.adminNumber}</Text>
+              <Text style={styles.label}>Longitude:</Text>
+              <Text style={styles.value}>{item.longitude}</Text>
+              <Text style={styles.label}>Latitude:</Text>
+              <Text style={styles.value}>{item.latitude}</Text>
+              <Text style={styles.label}>Tax Value:</Text>
+              <Text style={styles.value}>{item.taxValue}</Text>
+              <Text style={styles.label}>Address:</Text>
+              <Text style={styles.value}>{item.address}</Text>
               <Text style={styles.label}>Created At:</Text>
               <Text style={styles.value}>{item.createdAt}</Text>
               <Text style={styles.label}>Status:</Text>
@@ -154,14 +165,6 @@ const ManageStore = () => {
                     style={styles.actionIcon}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => console.log("Delete")}>
-                  <Ionicons
-                    name="trash-outline"
-                    size={24}
-                    color="red"
-                    style={styles.actionIcon}
-                  />
-                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -173,9 +176,9 @@ const ManageStore = () => {
   return (
     <View style={[styles.container, isDarkMode && styles.darkMode]}>
       <Header
-        leftIcon={require("../../images/logout.png")}
-        rightIcon={require("../../images/night-mode.png")}
-        title={"Super Admin Panel"}
+        leftIcon={require("../images/logout.png")}
+        rightIcon={require("../images/night-mode.png")}
+        title={"Manage Outlets"}
         onClickLeftIcon={() => {
           handleLogout();
         }}
@@ -188,7 +191,7 @@ const ManageStore = () => {
           {/* You can use any loader component here */}
           <ActivityIndicator size="large" color="#007bff" />
         </View>
-      ) : !storeData.length ? (
+      ) : !outletData.length ? (
         <View style={styles.noDataContainer}>
           <Text style={styles.noDataText}>You are not signed in!</Text>
           <TouchableOpacity
@@ -210,7 +213,7 @@ const ManageStore = () => {
               />
               <TextInput
                 style={styles.searchInput}
-                placeholder="Search Store"
+                placeholder="Search Outlet"
                 placeholderTextColor="#777"
                 onChangeText={handleSearch}
                 value={searchText}
@@ -400,4 +403,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ManageStore;
+export default ManageOutlets;

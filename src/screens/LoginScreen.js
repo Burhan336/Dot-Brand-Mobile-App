@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import Typewriter from "react-native-typewriter";
 import Icon from "react-native-vector-icons/FontAwesome";
+import AuthStorage from "../authentication/AuthStorage";
 
 const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +21,7 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [selectedRole, setSelectedRole] = useState("super-admin");
   const [isLoading, setIsLoading] = useState(false); // Loader state
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const navigation = useNavigation(); // Access navigation object
 
@@ -46,8 +48,24 @@ const LoginScreen = () => {
           AsyncStorage.setItem("accessToken", accessToken)
             .then(() => {
               console.log("Access token stored successfully");
+              console.log(accessToken);
               setIsLoading(false); // Toggle loader back to false after successful login
-              navigation.navigate("HomeScreen"); // Navigate to HomeScreen upon successful login
+              // setIsLoggedIn(true);
+              AuthStorage.setLoggedIn();
+              // Navigate to different screens based on selected role
+              switch (selectedRole) {
+                case "super-admin":
+                  navigation.navigate("HomeScreen");
+                  break;
+                case "multi-admin":
+                  navigation.navigate("MultiAdminScreen");
+                  break;
+                // case "sole-admin":
+                //   navigation.navigate("SoleAdminScreen");
+                //   break;
+                default:
+                  break;
+              }
             })
             .catch((error) => {
               setIsLoading(false); // Toggle loader back to false if storing token fails
@@ -66,6 +84,12 @@ const LoginScreen = () => {
         // Handle error or display an error message to the user
       });
   };
+
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     navigation.navigate("HomeScreen");
+  //   }
+  // }, [isLoggedIn]);
 
   return (
     <View style={styles.container}>
