@@ -8,25 +8,28 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import Typewriter from "react-native-typewriter";
-import Icon from "react-native-vector-icons/FontAwesome"; // Assuming FontAwesome for icons
-import axios from "axios"; // Import Axios
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import Typewriter from "react-native-typewriter";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [accessToken, setAccessToken] = useState(null);
+  const [selectedRole, setSelectedRole] = useState("super-admin");
+  const [isLoading, setIsLoading] = useState(false); // Loader state
 
-  const [selectedRole, setSelectedRole] = useState("super-admin"); // Default role
+  const navigation = useNavigation(); // Access navigation object
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
   const handleLogin = () => {
+    setIsLoading(true); // Set loader to true when login initiated
+
     const apiUrl = "https://dotbrand-api.onrender.com/api/v1/auth/login";
     const requestBody = {
       email,
@@ -37,63 +40,42 @@ const LoginScreen = () => {
     axios
       .post(apiUrl, requestBody)
       .then((response) => {
-        console.log("Login successful!", response.data);
-
         const { accessToken } = response.data.payload.token;
 
-        // Check if accessToken is valid
         if (accessToken) {
-          // Store accessToken in AsyncStorage after successful login
           AsyncStorage.setItem("accessToken", accessToken)
             .then(() => {
               console.log("Access token stored successfully");
+              setIsLoading(false); // Toggle loader back to false after successful login
+              navigation.navigate("HomeScreen"); // Navigate to HomeScreen upon successful login
             })
             .catch((error) => {
+              setIsLoading(false); // Toggle loader back to false if storing token fails
               console.error("Error storing access token:", error);
               // Handle error, such as showing an error message to the user
             });
         } else {
+          setIsLoading(false); // Toggle loader back to false if accessToken is null or undefined
           console.error("Access token is null or undefined");
           // Handle the case where accessToken is null or undefined
         }
-
-        // Assuming you have some logic to handle successful login here
-        // For example, navigation.navigate("Home");
       })
       .catch((error) => {
+        setIsLoading(false); // Toggle loader back to false if login fails
         console.error("Login failed:", error);
         // Handle error or display an error message to the user
       });
   };
 
-  const simulateLoginAPI = (email, password, role) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (email === "burhan.sq4906@gmail.com" && password === "password") {
-          resolve({ token: "exampleToken", role });
-        } else {
-          reject("Invalid credentials");
-        }
-      }, 1000);
-    });
-  };
-
-  const mockLoginAPI = (email, password, role) => {
-    console.log("Mock API - Login data:", { email, password, role });
-  };
-
   return (
     <View style={styles.container}>
-      {/* Blue Gradient Background */}
       <View style={styles.blueBackground}>
-        {/* Circular Avatar Logo */}
         <View style={styles.avatar}>
           <Image
             source={require("../images/logo.png")} /* Replace with your image path */
             style={styles.avatarImage}
           />
         </View>
-        {/* Display text: Welcome Back Super Admin */}
         <Typewriter
           style={styles.welcomeText}
           typing={1}
@@ -103,9 +85,7 @@ const LoginScreen = () => {
           Welcome Back Admin
         </Typewriter>
       </View>
-      {/* White Background */}
       <View style={styles.whiteBackground}>
-        {/* Email Input */}
         <View style={styles.inputContainer}>
           <Icon
             name="envelope"
@@ -121,7 +101,6 @@ const LoginScreen = () => {
             onChangeText={(text) => setEmail(text)}
           />
         </View>
-        {/* Password Input */}
         <View style={styles.inputContainer}>
           <Icon name="lock" size={20} color="#999" style={styles.inputIcon} />
           <TextInput
@@ -179,10 +158,16 @@ const LoginScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginText}>Login</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.loginText}>Login</Text>
+          </TouchableOpacity>
+          {isLoading && (
+            <View style={styles.activityIndicatorContainer}>
+              <ActivityIndicator size="large" color="#16288f" />
+            </View>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -197,7 +182,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#16288f", // Replace with your gradient style
+    backgroundColor: "#16288f",
     borderBottomRightRadius: 150,
   },
   welcomeText: {
@@ -266,12 +251,20 @@ const styles = StyleSheet.create({
   selectedRoleButton: {
     backgroundColor: "#16288f",
     borderColor: "#16288f",
-    color: "#fff", // Adding text color for selected role button
+    color: "#fff",
+  },
+  buttonContainer: {
+    alignItems: "center",
+  },
+  activityIndicatorContainer: {
+    marginTop: 20, // Adjust the margin as needed
+    alignItems: "center",
   },
   loginButton: {
     backgroundColor: "#16288f",
-    borderRadius: 8,
+    borderRadius: 10,
     paddingVertical: 15,
+    paddingHorizontal: 40,
     alignItems: "center",
     marginTop: 40,
   },
