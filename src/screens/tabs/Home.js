@@ -63,6 +63,8 @@ const Home = () => {
         onClickRightIcon={toggleDarkMode}
         isDarkMode={isDarkMode}
         isLoggedIn={isLoggedIn} // Pass handleLogout function
+        leftIconTestId="logout-icon" // Add testID for the left icon
+        rightIconTestId="night-mode-icon" // Add testID for the right icon
       />
 
       <View style={styles.cardContainer}>

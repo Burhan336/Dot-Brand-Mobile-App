@@ -54,15 +54,17 @@ const MultiAdminScreen = () => {
   return (
     <View style={[styles.container, isDarkMode && styles.darkMode]}>
       <Header
-        leftIcon={require("../images/logout.png")}
-        rightIcon={require("../images/night-mode.png")}
-        title={"Multi Admin Panel"}
+        leftIcon={require("../../images/logout.png")}
+        rightIcon={require("../../images/night-mode.png")}
+        title={"Super Admin Panel"}
         onClickLeftIcon={() => {
           handleLogout();
         }}
         onClickRightIcon={toggleDarkMode}
         isDarkMode={isDarkMode}
         isLoggedIn={isLoggedIn} // Pass handleLogout function
+        leftIconTestId="logout-icon" // Add testID for the left icon
+        rightIconTestId="right-icon" // Add testID for the right icon
       />
       {/* Updated section with title and labeled card section */}
       <View style={styles.welcomeContainer}>

@@ -36,7 +36,29 @@
     "yup": "^1.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.23.6",
+    "@babel/preset-react": "^7.23.3",
+    "@testing-library/react-native": "^12.4.1",
+    "babel-jest": "^29.7.0",
+    "detox": "^20.14.1",
+    "jest-expo": "^49.0.0",
+    "react-test-renderer": "^18.2.0"
+  },
+  "jest": {
+    "preset": "react-native",
+    "setupFiles": [
+      "./node_modules/react-native-gesture-handler/jestSetup.js",
+      "./__mocks__/AsyncStorage.mock.js"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|@react-native-community|@react-native|react-navigation|@expo/vector-icons)"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less)$": "identity-obj-proxy",
+      "^@expo/vector-icons(.*)$": "<rootDir>/__mocks__/expo-vector-icons-mock.js"
+    }
   },
   "private": true
 }

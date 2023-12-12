@@ -13,12 +13,18 @@ const Header = ({
   onClickRightIcon,
   isDarkMode,
   isLoggedIn,
+  leftIconTestId, // Receive the left icon testID prop
+  rightIconTestId,
 }) => {
   return (
     <SafeAreaView style={[styles.container, isDarkMode && styles.darkMode]}>
       <View style={styles.header}>
         {isLoggedIn && (
-          <TouchableOpacity style={styles.btn} onPress={onClickLeftIcon}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={onClickLeftIcon}
+            testID={leftIconTestId}
+          >
             <Image source={leftIcon} style={styles.icon} resizeMode="contain" />
           </TouchableOpacity>
         )}
@@ -26,7 +32,11 @@ const Header = ({
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
           {title}
         </Text>
-        <TouchableOpacity style={styles.btn} onPress={onClickRightIcon}>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={onClickRightIcon}
+          testID={rightIconTestId}
+        >
           <Image source={rightIcon} style={styles.icon} resizeMode="contain" />
         </TouchableOpacity>
       </View>
