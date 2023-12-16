@@ -2,8 +2,9 @@ import { View, Text } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 // import Main from "./screens/Main";
-import ManageStore from "./screens/tabs/ManageStore";
+import ManageStore from "./screens/ManageStore";
 import LoginScreen from "./screens/LoginScreen";
 // import HomeScreen from "./screens/HomeScreen";
 import MultiAdminScreen from "./screens/MultiAdminScreen";
@@ -21,13 +22,20 @@ import MultiAdminManageCategory from "./screens/MultiAdminManageCategory";
 import MultiAdminManageBanners from "./screens/MultiAdminManageBanners";
 import MultiAdminManageBrands from "./screens/MultiAdminManageBrands";
 import AddStore from "./screens/AddStore";
-import Home from "./screens/tabs/Home";
+import Home from "./screens/Home";
+import AddOutlet from "./screens/AddOutlet";
+import SplashScreen from "./screens/SplashScreen";
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginScreen">
+      <Stack.Navigator initialRouteName="SplashScreen">
+        <Stack.Screen
+          name="SplashScreen"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="LoginScreen"
           component={LoginScreen}
@@ -66,6 +74,11 @@ const AppNavigator = () => {
         <Stack.Screen
           name="ManageOutlets"
           component={ManageOutlets}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AddOutlet"
+          component={AddOutlet}
           options={{ headerShown: false }}
         />
         <Stack.Screen

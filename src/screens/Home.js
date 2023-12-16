@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import Header from "../../common/Header";
+import Header from "../common/Header";
 import { LineChart } from "react-native-chart-kit";
 import { useNavigation } from "@react-navigation/native";
-import AuthStorage from "../../authentication/AuthStorage";
+import AuthStorage from "../authentication/AuthStorage";
 
 const Home = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -15,8 +16,13 @@ const Home = () => {
     const checkLoginStatus = async () => {
       const loggedIn = await AuthStorage.isLoggedIn();
       setIsLoggedIn(loggedIn);
+      if (loggedIn) {
+        setShowSuccessMessage(true);
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 3000); // Show for 3 seconds
+      }
     };
-
     checkLoginStatus();
   }, []);
 
@@ -54,8 +60,8 @@ const Home = () => {
   return (
     <View style={[styles.container, isDarkMode && styles.darkMode]}>
       <Header
-        leftIcon={require("../../images/logout.png")}
-        rightIcon={require("../../images/night-mode.png")}
+        leftIcon={require("../images/logout.png")}
+        rightIcon={require("../images/night-mode.png")}
         title={"Super Admin Panel"}
         onClickLeftIcon={() => {
           handleLogout();
@@ -66,7 +72,11 @@ const Home = () => {
         leftIconTestId="logout-icon" // Add testID for the left icon
         rightIconTestId="night-mode-icon" // Add testID for the right icon
       />
-
+      {showSuccessMessage && (
+        <View style={styles.successMessage}>
+          <Text style={styles.successText}>Login Successful!</Text>
+        </View>
+      )}
       <View style={styles.cardContainer}>
         <View style={styles.card}>
           <Text style={styles.welcomeText}>Hello, Super Admin!</Text>
@@ -127,6 +137,30 @@ const styles = StyleSheet.create({
   },
   darkMode: {
     backgroundColor: "#222", // Dark mode background color for the entire screen
+  },
+  successMessage: {
+    position: "absolute",
+    bottom: 10,
+    alignSelf: "center",
+    backgroundColor: "#4CAF50",
+    padding: 15,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 999,
+  },
+  successText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
   cardContainer: {
     justifyContent: "center",

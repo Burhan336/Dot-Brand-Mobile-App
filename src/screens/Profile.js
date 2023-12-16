@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import Header from "../../common/Header";
+import Header from "../common/Header";
 import { AntDesign, Feather } from "@expo/vector-icons"; // Import icons from Expo
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 import { useNavigation } from "@react-navigation/native";

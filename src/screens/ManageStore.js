@@ -9,11 +9,11 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
-import Header from "../../common/Header";
+import Header from "../common/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native"; // Import useNavigation
-import AuthStorage from "../../authentication/AuthStorage";
+import AuthStorage from "../authentication/AuthStorage";
 
 const ManageStore = () => {
   const navigation = useNavigation();
@@ -173,8 +173,8 @@ const ManageStore = () => {
   return (
     <View style={[styles.container, isDarkMode && styles.darkMode]}>
       <Header
-        leftIcon={require("../../images/logout.png")}
-        rightIcon={require("../../images/night-mode.png")}
+        leftIcon={require("../images/logout.png")}
+        rightIcon={require("../images/night-mode.png")}
         title={"Super Admin Panel"}
         onClickLeftIcon={() => {
           handleLogout();

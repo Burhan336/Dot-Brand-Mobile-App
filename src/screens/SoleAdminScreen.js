@@ -8,6 +8,7 @@ import AuthStorage from "../authentication/AuthStorage";
 const SoleAdminScreen = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -15,6 +16,12 @@ const SoleAdminScreen = () => {
     const checkLoginStatus = async () => {
       const loggedIn = await AuthStorage.isLoggedIn();
       setIsLoggedIn(loggedIn);
+      if (loggedIn) {
+        setShowSuccessMessage(true);
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 3000); // Show for 3 seconds
+      }
     };
 
     checkLoginStatus();
@@ -58,6 +65,11 @@ const SoleAdminScreen = () => {
         isDarkMode={isDarkMode}
         isLoggedIn={isLoggedIn} // Pass handleLogout function
       />
+      {showSuccessMessage && (
+        <View style={styles.successMessage}>
+          <Text style={styles.successText}>Login Successful!</Text>
+        </View>
+      )}
       {/* Updated section with title and labeled card section */}
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>Welcome Sole Admin</Text>
@@ -147,6 +159,30 @@ const styles = StyleSheet.create({
   },
   darkMode: {
     backgroundColor: "#222",
+  },
+  successMessage: {
+    position: "absolute",
+    bottom: 10,
+    alignSelf: "center",
+    backgroundColor: "#4CAF50",
+    padding: 15,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 999,
+  },
+  successText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
   cardContainer: {
     flex: 1,

@@ -23,10 +23,23 @@ const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState(false); // Loader state
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const [loginMessage, setLoginMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+
   const navigation = useNavigation(); // Access navigation object
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  const showLoginMessage = (message, type) => {
+    setLoginMessage(message);
+    setMessageType(type);
+
+    setTimeout(() => {
+      setLoginMessage("");
+      setMessageType("");
+    }, 5000);
   };
 
   const handleLogin = () => {
@@ -52,6 +65,7 @@ const LoginScreen = () => {
               setIsLoading(false); // Toggle loader back to false after successful login
               // setIsLoggedIn(true);
               AuthStorage.setLoggedIn();
+
               // Navigate to different screens based on selected role
               switch (selectedRole) {
                 case "super-admin":
@@ -66,22 +80,24 @@ const LoginScreen = () => {
                 default:
                   break;
               }
+              showLoginMessage("Login successful!", "success");
             })
             .catch((error) => {
               setIsLoading(false); // Toggle loader back to false if storing token fails
               console.error("Error storing access token:", error);
+              showLoginMessage("Login failed. Please try again.", "error");
               // Handle error, such as showing an error message to the user
             });
         } else {
           setIsLoading(false); // Toggle loader back to false if accessToken is null or undefined
           console.error("Access token is null or undefined");
-          // Handle the case where accessToken is null or undefined
+          showLoginMessage("Login failed. Please try again.", "error");
         }
       })
       .catch((error) => {
         setIsLoading(false); // Toggle loader back to false if login fails
         console.error("Login failed:", error);
-        // Handle error or display an error message to the user
+        showLoginMessage("Login failed. Please try again.", "error");
       });
   };
 
@@ -110,6 +126,19 @@ const LoginScreen = () => {
         </Typewriter>
       </View>
       <View style={styles.whiteBackground}>
+        {loginMessage !== "" && (
+          <View style={styles.loginMessageContainer}>
+            <Text
+              style={
+                messageType === "success"
+                  ? styles.successText
+                  : styles.errorText
+              }
+            >
+              {loginMessage}
+            </Text>
+          </View>
+        )}
         <View style={styles.inputContainer}>
           <Icon
             name="envelope"
@@ -212,6 +241,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#16288f",
     borderBottomRightRadius: 150,
+  },
+  loginMessageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    top: 20,
+    left: 0,
+    right: 0,
+    zIndex: 9999,
+  },
+  successText: {
+    color: "green",
+    fontSize: 16,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 16,
   },
   welcomeText: {
     color: "#fff",

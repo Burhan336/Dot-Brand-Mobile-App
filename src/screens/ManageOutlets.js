@@ -8,8 +8,7 @@ import {
   TextInput,
   ActivityIndicator,
 } from "react-native";
-
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
@@ -186,6 +185,12 @@ const ManageOutlets = () => {
         isDarkMode={isDarkMode}
         isLoggedIn={isLoggedIn} // Pass handleLogout function
       />
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate("AddOutlet")}
+      >
+        <AntDesign name="plus" size={24} color="#fff" />
+      </TouchableOpacity>
       {loading ? (
         <View style={styles.loaderContainer}>
           {/* You can use any loader component here */}
@@ -400,6 +405,19 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  addButton: {
+    position: "absolute",
+    bottom: 50,
+    right: 30,
+    backgroundColor: "#007bff",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+    zIndex: 1,
   },
 });
 

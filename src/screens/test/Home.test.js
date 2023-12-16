@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent, act } from "@testing-library/react-native";
-import Home from "../tabs/Home"; // Adjust the import path according to your file structure
+import Home from "../Home"; // Adjust the import path according to your file structure
 
 // Mock the modules that are not relevant for testing this component
 
