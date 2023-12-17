@@ -11,6 +11,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Header from "../common/Header";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Formik } from "formik";
+import * as Yup from "yup";
 import AuthStorage from "../authentication/AuthStorage";
 import axios from "axios";
 
@@ -45,12 +47,32 @@ const AddStore = () => {
     }
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const toggleDarkMode = () => {
     setIsDarkMode((prevMode) => !prevMode);
     // Additional logic for applying dark mode across the app
   };
 
-  const handleAddStore = async () => {
+  const initialValues = {
+    storeName: "",
+    adminName: "",
+    adminEmail: "",
+    adminPassword: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    storeName: Yup.string().required("Store name is required"),
+    adminName: Yup.string().required("Admin name is required"),
+    adminEmail: Yup.string()
+      .email("Invalid email")
+      .required("Admin email is required"),
+    adminPassword: Yup.string().required("Admin password is required"),
+  });
+
+  const handleAddStore = async (values, { setSubmitting, resetForm }) => {
     try {
       setIsLoading(true);
       const accessToken = await AsyncStorage.getItem("accessToken");
@@ -58,10 +80,10 @@ const AddStore = () => {
         "https://dotbrand-api.onrender.com/api/v1/superadmin/store";
 
       const payload = {
-        storeName,
-        multiAdminName: adminName,
-        multiAdminEmail: adminEmail,
-        multiAdminPassword: adminPassword,
+        storeName: values.storeName,
+        multiAdminName: values.adminName,
+        multiAdminEmail: values.adminEmail,
+        multiAdminPassword: values.adminPassword,
       };
 
       const config = {
@@ -74,105 +96,134 @@ const AddStore = () => {
 
       // Check the response and handle success or any errors accordingly
       console.log("Store added successfully:", response.data);
-
-      setStoreName("");
-      setAdminName("");
-      setAdminEmail("");
-      setAdminPassword("");
-
+      resetForm();
       // Navigate back to 'ManageStores' upon successful addition of the store
       navigation.navigate("ManageStore");
-
       setIsLoading(false);
     } catch (error) {
       console.error("Error adding store:", error);
-      setIsLoading(false);
+
       // Handle error in adding store
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <View style={[styles.container, isDarkMode && styles.darkMode]}>
-      <Header
-        leftIcon={require("../images/logout.png")}
-        rightIcon={require("../images/night-mode.png")}
-        title={"Super Admin Panel"}
-        onClickLeftIcon={handleLogout}
-        onClickRightIcon={toggleDarkMode}
-        isDarkMode={isDarkMode}
-        isLoggedIn={isLoggedIn}
-      />
-      <View style={styles.formContent}>
-        <Text style={styles.heading}>Add Store</Text>
-        <View style={styles.inputSection}>
-          <Text style={styles.label}>Store Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter store name"
-            value={storeName}
-            onChangeText={setStoreName}
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleAddStore}
+    >
+      {({
+        values,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        isSubmitting,
+        touched,
+        errors,
+        resetForm,
+      }) => (
+        <View style={[styles.container, isDarkMode && styles.darkMode]}>
+          <Header
+            leftIcon={require("../images/logout.png")}
+            rightIcon={require("../images/night-mode.png")}
+            title={"Super Admin Panel"}
+            onClickLeftIcon={handleLogout}
+            onClickRightIcon={toggleDarkMode}
+            isDarkMode={isDarkMode}
+            isLoggedIn={isLoggedIn}
           />
-        </View>
-        <View style={styles.adminSection}>
-          <Text style={styles.subHeading}>Admin Details</Text>
-          <Text style={styles.label}>Multi Admin Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter admin name"
-            value={adminName}
-            onChangeText={setAdminName}
-          />
-
-          <Text style={styles.label}>Multi Admin Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter admin email"
-            value={adminEmail}
-            onChangeText={setAdminEmail}
-          />
-
-          <View style={styles.passwordSection}>
-            <Text style={styles.label}>Multi Admin Password</Text>
-            <TextInput
-              style={styles.passwordInput}
-              placeholder="Enter admin password"
-              secureTextEntry={!showPassword}
-              value={adminPassword}
-              onChangeText={setAdminPassword}
-            />
-            <TouchableOpacity
-              style={styles.eyeIcon}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Ionicons
-                name={showPassword ? "eye-off-outline" : "eye-outline"}
-                size={24}
-                color="#777"
+          <View style={styles.formContent}>
+            <Text style={styles.heading}>Add Store</Text>
+            <View style={styles.inputSection}>
+              <Text style={styles.label}>Store Name</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter store name"
+                value={values.storeName}
+                onChangeText={handleChange("storeName")}
+                onBlur={handleBlur("storeName")}
               />
-            </TouchableOpacity>
+              {touched.storeName && errors.storeName && (
+                <Text style={styles.errorText}>{errors.storeName}</Text>
+              )}
+            </View>
+            <View style={styles.adminSection}>
+              <Text style={styles.subHeading}>Admin Details</Text>
+              <Text style={styles.label}>Admin Name</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter admin name"
+                value={values.adminName}
+                onChangeText={handleChange("adminName")}
+                onBlur={handleBlur("adminName")}
+              />
+              {touched.adminName && errors.adminName && (
+                <Text style={styles.errorText}>{errors.adminName}</Text>
+              )}
+
+              <Text style={styles.label}>Admin Email</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter admin email"
+                value={values.adminEmail}
+                onChangeText={handleChange("adminEmail")}
+                onBlur={handleBlur("adminEmail")}
+              />
+              {touched.adminEmail && errors.adminEmail && (
+                <Text style={styles.errorText}>{errors.adminEmail}</Text>
+              )}
+
+              <View style={styles.passwordSection}>
+                <Text style={styles.label}>Admin Password</Text>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="Enter admin password"
+                  secureTextEntry={true}
+                  value={values.adminPassword}
+                  onChangeText={handleChange("adminPassword")}
+                  onBlur={handleBlur("adminPassword")}
+                />
+                {touched.adminPassword && errors.adminPassword && (
+                  <Text style={styles.errorText}>{errors.adminPassword}</Text>
+                )}
+                <TouchableOpacity
+                  style={styles.eyeIcon}
+                  onPress={toggleShowPassword}
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    size={24}
+                    color="#777"
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={handleSubmit}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.buttonText}>Add Store</Text>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => navigation.goBack()}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={handleAddStore}
-            disabled={isLoading} // Disable button during loading
-          >
-            {isLoading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Add Store</Text>
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+      )}
+    </Formik>
   );
 };
 
@@ -194,6 +245,14 @@ const styles = StyleSheet.create({
   },
   inputSection: {
     marginBottom: 20,
+  },
+  errorText: {
+    fontWeight: "bold",
+    fontSize: 14,
+    color: "red",
+    marginTop: -10,
+    marginBottom: 10,
+    // Add other necessary styles
   },
   adminSection: {
     marginBottom: 20,

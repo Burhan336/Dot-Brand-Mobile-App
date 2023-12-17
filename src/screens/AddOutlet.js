@@ -12,22 +12,12 @@ import { Ionicons } from "@expo/vector-icons";
 import Header from "../common/Header";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Formik } from "formik";
+import * as Yup from "yup";
 import AuthStorage from "../authentication/AuthStorage";
 import axios from "axios";
 
 const AddOutlet = () => {
-  const [outletName, setOutletName] = useState("");
-  const [adminName, setAdminName] = useState("");
-  const [adminEmail, setAdminEmail] = useState("");
-  const [adminPassword, setAdminPassword] = useState("");
-  const [adminNumber, setAdminNumber] = useState("");
-  const [address, setAddress] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [taxType, setTaxType] = useState("");
-  const [taxValue, setTaxValue] = useState("");
-  const [status, setStatus] = useState("true");
-
   const [showPassword, setShowPassword] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,6 +32,47 @@ const AddOutlet = () => {
     };
     checkLoginStatus();
   }, []);
+
+  const initialValues = {
+    outletName: "",
+    adminName: "",
+    adminEmail: "",
+    adminPassword: "",
+    adminNumber: "",
+    address: "",
+    latitude: "",
+    longitude: "",
+    taxType: "",
+    taxValue: "",
+    status: true,
+  };
+
+  const validationSchema = Yup.object().shape({
+    outletName: Yup.string().required("Outlet name is required"),
+    adminName: Yup.string().required("Admin name is required"),
+    adminEmail: Yup.string()
+      .email("Invalid email")
+      .required("Email is required"),
+    adminPassword: Yup.string().required("Password is required"),
+    adminNumber: Yup.string().required("Admin number is required"),
+    address: Yup.string().required("Address is required"),
+    latitude: Yup.number()
+      .min(-90, "Latitude must be greater than or equal to -90")
+      .max(90, "Latitude must be less than or equal to 90")
+      .required("Latitude is required"),
+    longitude: Yup.number()
+      .min(-180, "Longitude must be greater than or equal to -180")
+      .max(180, "Longitude must be less than or equal to 180")
+      .required("Longitude is required"),
+    taxType: Yup.string().required("Tax type is required"),
+    taxValue: Yup.string()
+      .matches(
+        /^\d+(\.\d+)?%$/,
+        "Tax value must be in the format like 2.5% or 4%"
+      )
+      .required("Tax value is required"),
+    status: Yup.boolean().required("Status is required"),
+  });
 
   const handleLogout = async () => {
     try {
@@ -59,7 +90,7 @@ const AddOutlet = () => {
     // Additional logic for applying dark mode across the app
   };
 
-  const handleAddOutlet = async () => {
+  const handleAddOutlet = async (values, { setSubmitting, resetForm }) => {
     try {
       setIsLoading(true);
       const accessToken = await AsyncStorage.getItem("accessToken");
@@ -67,17 +98,17 @@ const AddOutlet = () => {
         "https://dotbrand-api.onrender.com/api/v1/multiadmin/outlet/";
 
       const payload = {
-        outletName: outletName,
-        adminName: adminName,
-        adminEmail: adminEmail,
-        adminPassword: adminPassword,
-        adminNumber: adminNumber,
-        address: address,
-        latitude: latitude,
-        longitude: longitude,
-        taxType: taxType,
-        taxValue: taxValue,
-        status: status,
+        outletName: values.outletName,
+        adminName: values.adminName,
+        adminEmail: values.adminEmail,
+        adminPassword: values.adminPassword,
+        adminNumber: values.adminNumber,
+        address: values.address,
+        latitude: values.latitude,
+        longitude: values.longitude,
+        taxType: values.taxType,
+        taxValue: values.taxValue,
+        status: true,
       };
 
       const config = {
@@ -90,178 +121,223 @@ const AddOutlet = () => {
 
       // Check the response and handle success or any errors accordingly
       console.log("Outlet added successfully:", response.data);
-
-      setOutletName("");
-      setAdminName("");
-      setAdminEmail("");
-      setAdminPassword("");
-      setAdminNumber("");
-      setAddress("");
-      setLatitude("");
-      setLongitude("");
-      setTaxType("");
-      setTaxValue("");
-      setStatus("");
-
+      resetForm();
       // Navigate back to 'ManageOutlets' upon successful addition of the Outlet
       navigation.navigate("ManageOutlets");
-
       setIsLoading(false);
     } catch (error) {
       console.error("Error adding outlet:", error);
       setIsLoading(false);
       // Handle error in adding outlet
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <ScrollView style={[styles.container, isDarkMode && styles.darkMode]}>
-      <Header
-        leftIcon={require("../images/logout.png")}
-        rightIcon={require("../images/night-mode.png")}
-        title={"Super Admin Panel"}
-        onClickLeftIcon={handleLogout}
-        onClickRightIcon={toggleDarkMode}
-        isDarkMode={isDarkMode}
-        isLoggedIn={isLoggedIn}
-      />
-      <View style={styles.formContent}>
-        <Text style={styles.heading}>Add Outlet</Text>
-        <View style={styles.inputSection}>
-          {/* Outlet Name */}
-          <Text style={styles.label}>Outlet Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter outlet name"
-            value={outletName}
-            onChangeText={setOutletName}
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleAddOutlet}
+    >
+      {({
+        values,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        isSubmitting,
+        touched,
+        errors,
+        resetForm,
+      }) => (
+        <ScrollView style={[styles.container, isDarkMode && styles.darkMode]}>
+          <Header
+            leftIcon={require("../images/logout.png")}
+            rightIcon={require("../images/night-mode.png")}
+            title={"Super Admin Panel"}
+            onClickLeftIcon={handleLogout}
+            onClickRightIcon={toggleDarkMode}
+            isDarkMode={isDarkMode}
+            isLoggedIn={isLoggedIn}
           />
-
-          {/* Admin Details */}
-          <View style={styles.adminSection}>
-            <Text style={styles.subHeading}>Admin Details</Text>
-
-            {/* Admin Name */}
-            <Text style={styles.label}>Multi Admin Name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter admin name"
-              value={adminName}
-              onChangeText={setAdminName}
-            />
-
-            {/* Admin Email */}
-            <Text style={styles.label}>Multi Admin Email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter admin email"
-              value={adminEmail}
-              onChangeText={setAdminEmail}
-            />
-
-            {/* Admin Password */}
-            <View style={styles.passwordSection}>
-              <Text style={styles.label}>Multi Admin Password</Text>
+          <View style={styles.formContent}>
+            <Text style={styles.heading}>Add Outlet</Text>
+            <View style={styles.inputSection}>
+              {/* Outlet Name */}
+              <Text style={styles.label}>Outlet Name</Text>
               <TextInput
-                style={styles.passwordInput}
-                placeholder="Enter admin password"
-                secureTextEntry={!showPassword}
-                value={adminPassword}
-                onChangeText={setAdminPassword}
+                style={styles.input}
+                placeholder="Enter outlet name"
+                value={values.outletName}
+                onChangeText={handleChange("outletName")}
+                onBlur={handleBlur("outletName")}
               />
-              <TouchableOpacity
-                style={styles.eyeIcon}
-                onPress={() => setShowPassword(!showPassword)}
-              >
-                <Ionicons
-                  name={showPassword ? "eye-off-outline" : "eye-outline"}
-                  size={24}
-                  color="#777"
-                />
-              </TouchableOpacity>
-            </View>
-
-            {/* Additional Fields */}
-            <Text style={styles.label}>Admin Phone Number</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter admin phone number"
-              value={adminNumber}
-              onChangeText={setAdminNumber}
-            />
-
-            <Text style={styles.label}>Address</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter address"
-              value={address}
-              onChangeText={setAddress}
-            />
-
-            <Text style={styles.label}>Latitude</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter latitude between -90.00 to 90.00"
-              value={latitude}
-              onChangeText={setLatitude}
-            />
-
-            <Text style={styles.label}>Longitude</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter longitude between -180.00 to 180.00"
-              value={longitude}
-              onChangeText={setLongitude}
-            />
-
-            <Text style={styles.label}>Tax Type</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter tax type"
-              value={taxType}
-              onChangeText={setTaxType}
-            />
-
-            <Text style={styles.label}>Tax Value</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter tax value"
-              value={taxValue}
-              onChangeText={setTaxValue}
-            />
-
-            <Text style={styles.label}>Status</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter status"
-              value={status}
-              onChangeText={setStatus}
-            />
-          </View>
-
-          {/* Buttons */}
-          <View style={styles.buttonsContainer}>
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={handleAddOutlet}
-              disabled={isLoading} // Disable button during loading
-            >
-              {isLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>Add Outlet</Text>
+              {touched.outletName && errors.outletName && (
+                <Text style={styles.errorText}>{errors.outletName}</Text>
               )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => navigation.goBack()}
-            >
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
+
+              {/* Admin Details */}
+              <View style={styles.adminSection}>
+                <Text style={styles.subHeading}>Admin Details</Text>
+
+                {/* Admin Name */}
+                <Text style={styles.label}>Multi Admin Name</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter admin name"
+                  value={values.adminName}
+                  onChangeText={handleChange("adminName")}
+                  onBlur={handleBlur("adminName")}
+                />
+                {touched.adminName && errors.adminName && (
+                  <Text style={styles.errorText}>{errors.adminName}</Text>
+                )}
+
+                {/* Admin Email */}
+                <Text style={styles.label}>Multi Admin Email</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter admin email"
+                  value={values.adminEmail}
+                  onChangeText={handleChange("adminEmail")}
+                  onBlur={handleBlur("adminEmail")}
+                />
+                {touched.adminEmail && errors.adminEmail && (
+                  <Text style={styles.errorText}>{errors.adminEmail}</Text>
+                )}
+                {/* Admin Password */}
+                <View style={styles.passwordSection}>
+                  <Text style={styles.label}>Multi Admin Password</Text>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Enter admin password"
+                    secureTextEntry={!showPassword}
+                    value={values.adminPassword}
+                    onChangeText={handleChange("adminPassword")}
+                    onBlur={handleBlur("adminPassword")}
+                  />
+                  {touched.adminPassword && errors.adminPassword && (
+                    <Text style={styles.errorText}>{errors.adminPassword}</Text>
+                  )}
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Ionicons
+                      name={showPassword ? "eye-off-outline" : "eye-outline"}
+                      size={24}
+                      color="#777"
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                {/* Additional Fields */}
+                <Text style={styles.label}>Admin Phone Number</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter admin phone number"
+                  value={values.adminNumber}
+                  onChangeText={handleChange("adminNumber")}
+                  onBlur={handleBlur("adminNumber")}
+                />
+                {touched.adminNumber && errors.adminNumber && (
+                  <Text style={styles.errorText}>{errors.adminNumber}</Text>
+                )}
+
+                <Text style={styles.label}>Address</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter address"
+                  value={values.address}
+                  onChangeText={handleChange("address")}
+                  onBlur={handleBlur("address")}
+                />
+                {touched.address && errors.address && (
+                  <Text style={styles.errorText}>{errors.address}</Text>
+                )}
+
+                <Text style={styles.label}>Latitude</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter latitude between -90.00 to 90.00"
+                  value={values.latitude}
+                  onChangeText={handleChange("latitude")}
+                  onBlur={handleBlur("latitude")}
+                />
+                {touched.latitude && errors.latitude && (
+                  <Text style={styles.errorText}>{errors.latitude}</Text>
+                )}
+
+                <Text style={styles.label}>Longitude</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter longitude between -180.00 to 180.00"
+                  value={values.longitude}
+                  onChangeText={handleChange("longitude")}
+                  onBlur={handleBlur("longitude")}
+                />
+                {touched.longitude && errors.longitude && (
+                  <Text style={styles.errorText}>{errors.longitude}</Text>
+                )}
+
+                <Text style={styles.label}>Tax Type</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter tax type"
+                  value={values.taxType}
+                  onChangeText={handleChange("taxType")}
+                  onBlur={handleBlur("taxType")}
+                />
+                {touched.taxType && errors.taxType && (
+                  <Text style={styles.errorText}>{errors.taxType}</Text>
+                )}
+
+                <Text style={styles.label}>Tax Value</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter tax value"
+                  value={values.taxValue}
+                  onChangeText={handleChange("taxValue")}
+                  onBlur={handleBlur("taxValue")}
+                />
+                {touched.taxValue && errors.taxValue && (
+                  <Text style={styles.errorText}>{errors.taxValue}</Text>
+                )}
+                {/* 
+                <Text style={styles.label}>Status</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter status"
+                  value={status}
+                  onChangeText={setStatus}
+                /> */}
+              </View>
+
+              {/* Buttons */}
+              <View style={styles.buttonsContainer}>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={handleSubmit}
+                  disabled={isSubmitting} // Disable button during loading
+                >
+                  {isSubmitting ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.buttonText}>Add Outlet</Text>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => navigation.goBack()}
+                >
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </View>
-      </View>
-    </ScrollView>
+        </ScrollView>
+      )}
+    </Formik>
   );
 };
 
@@ -280,6 +356,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+  },
+  errorText: {
+    fontWeight: "bold",
+    fontSize: 14,
+    color: "red",
+    marginTop: -10,
+    marginBottom: 10,
+    // Add other necessary styles
   },
   inputSection: {
     marginBottom: 20,
