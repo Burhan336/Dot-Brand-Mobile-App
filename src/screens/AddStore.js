@@ -17,10 +17,6 @@ import AuthStorage from "../authentication/AuthStorage";
 import axios from "axios";
 
 const AddStore = () => {
-  const [storeName, setStoreName] = useState("");
-  const [adminName, setAdminName] = useState("");
-  const [adminEmail, setAdminEmail] = useState("");
-  const [adminPassword, setAdminPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);

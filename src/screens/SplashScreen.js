@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "blue", // Replace with your desired gradient colors or styles
+    backgroundColor: "#8a0b0b", // Replace with your desired gradient colors or styles
   },
   logoContainer: {
     position: "absolute",
