@@ -120,7 +120,7 @@ const SoleAdminManageProducts = () => {
   const renderCard = ({ item }) => {
     console.log("Item:", item);
 
-    const { catalogItem, quantity } = item; //As the api response give all other parameters in  "catalogItem" and quantity as "quantity"
+    const { quantity, name, originalPrice, salePrice } = item;
 
     return (
       <TouchableOpacity onPress={() => console.log("Card pressed")}>
@@ -128,11 +128,14 @@ const SoleAdminManageProducts = () => {
           <View style={styles.card}>
             <View style={styles.cardInfo}>
               <Text style={styles.label}>Product Name:</Text>
-              <Text style={styles.value}>{catalogItem.name}</Text>
+              <Text style={styles.value}>{name}</Text>
+
               <Text style={styles.label}>Original Price</Text>
-              <Text style={styles.value}>{catalogItem.originalPrice}</Text>
+              <Text style={styles.value}>Rs {originalPrice} </Text>
+
               <Text style={styles.label}>Sale Price</Text>
-              <Text style={styles.value}>{catalogItem.salePrice}</Text>
+              <Text style={styles.value}>Rs {salePrice}</Text>
+
               <Text style={styles.label}>Quantity</Text>
               <Text style={styles.value}>{quantity}</Text>
             </View>

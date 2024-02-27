@@ -119,21 +119,21 @@ const MultiAdminScreen = () => {
           >
             <Text style={styles.cardTitle}>Manage Brands</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.card, styles.manageCard]}
             onPress={() => navigation.navigate("MultiAdminManageUsers")}
           >
             <Text style={styles.cardTitle}>Manage Users</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         <View style={styles.cardRow}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.card, styles.manageCard]}
             onPress={() => navigation.navigate("MultiAdminManageOrders")}
           >
             <Text style={styles.cardTitle}>Manage Orders</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 

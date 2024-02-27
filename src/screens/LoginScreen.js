@@ -284,13 +284,13 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#8a0b0b",
+    backgroundColor: "blue",
   },
   blueBackground: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#8a0b0b",
+    backgroundColor: "blue",
     borderBottomRightRadius: 150,
   },
   loginMessageContainer: {
@@ -376,8 +376,8 @@ const styles = StyleSheet.create({
     borderColor: "#999",
   },
   selectedRoleButton: {
-    backgroundColor: "#8a0b0b",
-    borderColor: "#8a0b0b",
+    backgroundColor: "blue",
+    borderColor: "blue",
     color: "#fff",
   },
   buttonContainer: {
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   loginButton: {
-    backgroundColor: "#8a0b0b",
+    backgroundColor: "blue",
     borderRadius: 10,
     paddingVertical: 15,
     paddingHorizontal: 60,

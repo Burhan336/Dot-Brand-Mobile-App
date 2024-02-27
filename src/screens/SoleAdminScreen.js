@@ -111,12 +111,12 @@ const SoleAdminScreen = () => {
           >
             <Text style={styles.cardTitle}>Manage Brands</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.card, styles.manageCard]}
             onPress={() => navigation.navigate("SoleAdminManageUsers")}
           >
             <Text style={styles.cardTitle}>Manage Users</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 
